@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>DataDog Logs Viewer</title>
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 20px; background: #f7f7f7; }
+    h1 { color: #1A5276; text-align: center; }
+    .container { max-width: 1200px; margin: auto; }
+    table { width: 100%; border-collapse: collapse; background: white; margin-top: 20px; }
+    th, td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+    th { background-color: #2980B9; color: white; }
+    tr:nth-child(even) { background-color: #f2f2f2; }
+    .error-row { background-color: #ffcccc !important; color: #a10000; }
+    caption { font-size: 1.2em; margin: 10px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>DataDog Logs</h1>
+    <table id="logTable">
+      <caption>DataDog Mobile Logs (Top 500 Rows)</caption>
+      <thead>
+        <tr>
+          <th>Timestamp</th>
+          <th>Session ID</th>
+          <th>Event Index</th>
+          <th>Event Name</th>
+          <th>Platform</th>
+          <th>Log Message</th>
+          <th>Article ID</th>
+          <th>Correlation ID</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <script>
+    fetch("datadog_mobile_logs.csv")
+      .then(response => response.text())
+      .then(text => {
+        const rows = text.split("\n").filter(line => line.trim() !== "");
+        const headers = rows[0].split(",");
+        const tbody = document.getElementById("logTable").querySelector("tbody");
+        const maxRows = 500;
+        for (let i = 1; i < Math.min(rows.length, maxRows + 1); i++) {
+          const rowData = rows[i].split(",");
+          const tr = document.createElement("tr");
+          let containsError = false;
+          headers.forEach((_, index) => {
+            const td = document.createElement("td");
+            const cellText = rowData[index] || "";
+            td.textContent = cellText;
+            if (cellText.toLowerCase().includes("error") || cellText.toLowerCase().includes("failure")) {
+              containsError = true;
+            }
+            tr.appendChild(td);
+          });
+          if (containsError) {
+            tr.classList.add("error-row");
+          }
+          tbody.appendChild(tr);
+        }
+      })
+      .catch(error => console.error("Error loading DataDog CSV:", error));
+  </script>
+</body>
+</html>
