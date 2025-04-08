@@ -1,4 +1,5 @@
 Issue_ID,Project,Summary,Description,Created_Date,Time_Window
-JIRA-CV-001,Live Issues,CNN Article Outage,Several sessions reported that CNN articles were not loading during a specific window.,2025-02-06 09:58:07,2025-02-01 02:00:00 - 2025-02-01 06:00:00
-JIRA-CV-002,Live Issues,Video Article Outage (CV),A transient failure in video article streams was observed during a 50-minute window.,2025-02-06 14:57:13,2025-02-01 08:00:00 - 2025-02-01 08:50:00
-JIRA-CV-003,Live Issues,Google Login Outage (Android),Android sessions using Google login consistently failed during a 6-hour window.,2025-02-06 14:04:11,2025-02-01 10:00:00 - 2025-02-01 16:00:00
+JIRA-CV-001,Live Issues,Articles not loading,Users reported that CNN articles were not loading in this time window,2025-02-06 06:54:16,2025-02-01 02:00:00 - 2025-02-01 06:00:00
+JIRA-CV-002,Live Issues,Video Streaming Failure,Too many video streaming failure events in this time window,2025-02-06 09:49:11,2025-02-01 08:00:00 - 2025-02-01 08:50:00
+JIRA-CV-003,Live Issues,Google Login Failure,Android Sessions using Google login encountered failures for a prolonged period.,2025-02-06 01:42:07,2025-02-01 10:00:00 - 2025-02-01 16:00:00
+JIRA-CV-004,Live Issues,Audio Articles Error,Audio articles reported errors in this time window.,2025-02-06 23:39:26,2025-02-01 12:00:00 - 2025-02-01 16:00:00
