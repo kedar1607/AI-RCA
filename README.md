@@ -27,7 +27,7 @@ The app sends logs to multiple systems:
 
 - Python 3.9.7
 - Jupyter Notebook
-- Required Python packages (will be listed in requirements.txt)
+- Required Python packages (listed in requirements.txt)
 
 ## Installation
 
@@ -51,6 +51,11 @@ source venv/bin/activate  # On Windows, use: venv\Scripts\activate
 3. Install the required dependencies:
 ```bash
 pip install -r requirements.txt
+```
+
+4. Install Jupyter Notebook if you haven't already:
+```bash
+pip install jupyter
 ```
 
 ## Usage Instructions
