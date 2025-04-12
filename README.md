@@ -70,7 +70,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
-[Add your license information here]
+https://github.com/kedar1607/AI-RCA/blob/main/LICENSE
 
 ## Contact
 
