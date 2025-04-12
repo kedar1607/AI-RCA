@@ -1,6 +1,9 @@
 # AI-RCA: Automated Root Cause Analysis
 
 This project implements an automated Root Cause Analysis (RCA) system that uses machine learning to predict the root causes of Jira tickets based on log data. The system employs multiple similarity metrics including Cosine Similarity, Word-Wrap, and Levenshtein distance to make accurate predictions.
+<img width="1006" alt="Screenshot 2025-04-12 at 7 55 58 PM" src="https://github.com/user-attachments/assets/f1bcf2d4-2662-4149-a12f-65039759af15" />
+
+
 
 ## Similarity Metrics
 
@@ -114,12 +117,16 @@ You can also use the Jupyter notebooks for more detailed analysis:
      - `datadog_mobile_logs.csv`
      - `backend_logs.csv`
      - Training and cross-validation Jira tickets
+     - <img width="1006" alt="Screenshot 2025-04-12 at 7 55 58 PM" src="https://github.com/user-attachments/assets/855a1c7f-d3f6-4ddb-a665-7fe08d91a3f5" />
+
 
 2. **Training and Inference**:
    - Open `training_inference.ipynb`
    - Run the first and second Python cells
    - Wait for the training and inference process to complete
    - Review the predictions in the output
+   - <img width="924" alt="Screenshot 2025-04-12 at 7 56 54 PM" src="https://github.com/user-attachments/assets/7bc78f10-fd0b-4d8c-a25c-d9409527a4ab" />
+
 
 ## Project Structure
 
