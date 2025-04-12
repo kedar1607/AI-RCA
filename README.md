@@ -2,6 +2,30 @@
 
 This project implements an automated Root Cause Analysis (RCA) system that uses machine learning to predict the root causes of Jira tickets based on log data. The system employs multiple similarity metrics including Cosine Similarity, Word-Wrap, and Levenshtein distance to make accurate predictions.
 
+## Similarity Metrics
+
+The system uses three different similarity metrics to analyze and compare text data:
+
+1. **Cosine Similarity**
+   - Measures the cosine of the angle between two vectors in an inner product space
+   - Range: [-1, 1] where 1 indicates identical vectors
+   - Implementation: scikit-learn's `cosine_similarity`
+   - Documentation: [scikit-learn Cosine Similarity](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.pairwise.cosine_similarity.html)
+   - Wikipedia: [Cosine Similarity](https://en.wikipedia.org/wiki/Cosine_similarity)
+
+2. **Word-Wrap Similarity**
+   - Analyzes text similarity by comparing word sequences and their arrangements
+   - Useful for detecting similar error patterns in logs
+   - Implementation: Custom implementation using text processing techniques
+   - Python Documentation: [String Methods](https://docs.python.org/3/library/stdtypes.html#string-methods)
+
+3. **Levenshtein Distance**
+   - Measures the minimum number of single-character edits required to change one string into another
+   - Range: [0, ∞) where 0 indicates identical strings
+   - Implementation: `python-Levenshtein` package
+   - Documentation: [python-Levenshtein](https://rawgit.com/ztane/python-Levenshtein/master/docs/Levenshtein.html#Levenshtein-distance)
+   - Wikipedia: [Levenshtein Distance](https://en.wikipedia.org/wiki/Levenshtein_distance)
+
 ## Project Context
 
 The log data used in this project is generated from an `imaginary` news app for iOS and Android that consolidates news articles (text, audio, and video) from different news sources. The app includes the following `imaginary` functionality and screens:
