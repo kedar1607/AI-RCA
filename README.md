@@ -1,7 +1,6 @@
 # AI-RCA: Automated Root Cause Analysis
 
 This project implements an automated Root Cause Analysis (RCA) system that uses machine learning to predict the root causes of Jira tickets based on log data. The system employs multiple similarity metrics including Cosine Similarity, Word-Wrap, and Levenshtein distance to make accurate predictions.
-<img width="1006" alt="Screenshot 2025-04-12 at 7 55 58 PM" src="https://github.com/user-attachments/assets/f1bcf2d4-2662-4149-a12f-65039759af15" />
 
 
 
