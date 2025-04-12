@@ -2,6 +2,27 @@
 
 This project implements an automated Root Cause Analysis (RCA) system that uses machine learning to predict the root causes of Jira tickets based on log data. The system employs multiple similarity metrics including Cosine Similarity, Word-Wrap, and Levenshtein distance to make accurate predictions.
 
+## Project Context
+
+The log data used in this project is generated from an `imaginary` news app for iOS and Android that consolidates news articles (text, audio, and video) from different news sources. The app includes the following `imaginary` functionality and screens:
+
+1. Splash screen
+2. Login Screen with Error scenarios:
+   - Login using email
+   - Google authentication
+   - Twitter authentication
+3. Home screen
+4. Article Screen with Error scenarios
+5. Video Article Screen with error scenarios
+6. Audio Article Screen with error scenarios
+7. Share Screen
+8. Search feature
+
+The app sends logs to multiple systems:
+- DataDog (`datadog_mobile_logs.csv`)
+- Analytics system (`analytics_logs.csv`)
+- Backend component (`backend_logs.csv`)
+
 ## Prerequisites
 
 - Python 3.9.7
