@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RCA Prediction System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            padding-top: 2rem;
+        }
+        .container {
+            max-width: 900px;
+        }
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        .card-header {
+            background-color: #4a6bdf;
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+            padding: 1rem;
+        }
+        .btn-primary {
+            background-color: #4a6bdf;
+            border-color: #4a6bdf;
+        }
+        .btn-primary:hover {
+            background-color: #3a5bc9;
+            border-color: #3a5bc9;
+        }
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #218838;
+        }
+        .spinner-border {
+            width: 1.5rem;
+            height: 1.5rem;
+            margin-right: 0.5rem;
+        }
+        .result-section {
+            display: none;
+            margin-top: 1rem;
+        }
+        .table {
+            margin-top: 1rem;
+        }
+        .alert {
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mb-4">RCA Prediction System</h1>
+        
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Data Generation</h5>
+            </div>
+            <div class="card-body">
+                <p>Generate synthetic data for training and cross-validation.</p>
+                <button id="simulateBtn" class="btn btn-primary">
+                    <span class="spinner-border d-none" role="status" aria-hidden="true"></span>
+                    Simulate
+                </button>
+                <div id="simulateResult" class="result-section">
+                    <div class="alert alert-success">
+                        <h5>Data Generation Results</h5>
+                        <div id="simulateFiles"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">RCA Prediction</h5>
+            </div>
+            <div class="card-body">
+                <p>Train the model and predict RCA for cross-validation data.</p>
+                <button id="predictBtn" class="btn btn-success">
+                    <span class="spinner-border d-none" role="status" aria-hidden="true"></span>
+                    Predict
+                </button>
+                <div id="predictResult" class="result-section">
+                    <div class="alert alert-success">
+                        <h5>Prediction Results</h5>
+                        <div id="predictionsTable"></div>
+                    </div>
+                    <div class="alert alert-info">
+                        <h5>Model Performance</h5>
+                        <div id="modelPerformance"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const simulateBtn = document.getElementById('simulateBtn');
+            const predictBtn = document.getElementById('predictBtn');
+            const simulateResult = document.getElementById('simulateResult');
+            const predictResult = document.getElementById('predictResult');
+            const simulateFiles = document.getElementById('simulateFiles');
+            const predictionsTable = document.getElementById('predictionsTable');
+            const modelPerformance = document.getElementById('modelPerformance');
+            
+            simulateBtn.addEventListener('click', function() {
+                // Show loading spinner
+                const spinner = simulateBtn.querySelector('.spinner-border');
+                spinner.classList.remove('d-none');
+                simulateBtn.disabled = true;
+                simulateResult.style.display = 'none';
+                
+                // Call the simulate endpoint
+                fetch('/simulate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Hide loading spinner
+                    spinner.classList.add('d-none');
+                    simulateBtn.disabled = false;
+                    
+                    // Display results
+                    if (data.status === 'success') {
+                        simulateFiles.innerHTML = `
+                            <p>${data.message}</p>
+                            <h6>Generated Files:</h6>
+                            <ul>
+                                ${Object.entries(data.files).map(([file, size]) => 
+                                    `<li>${file}: ${size}</li>`
+                                ).join('')}
+                            </ul>
+                        `;
+                        simulateResult.style.display = 'block';
+                    } else {
+                        simulateFiles.innerHTML = `
+                            <div class="alert alert-danger">
+                                ${data.message}
+                            </div>
+                        `;
+                        simulateResult.style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    // Hide loading spinner
+                    spinner.classList.add('d-none');
+                    simulateBtn.disabled = false;
+                    
+                    // Display error
+                    simulateFiles.innerHTML = `
+                        <div class="alert alert-danger">
+                            Error: ${error.message}
+                        </div>
+                    `;
+                    simulateResult.style.display = 'block';
+                });
+            });
+            
+            predictBtn.addEventListener('click', function() {
+                // Show loading spinner
+                const spinner = predictBtn.querySelector('.spinner-border');
+                spinner.classList.remove('d-none');
+                predictBtn.disabled = true;
+                predictResult.style.display = 'none';
+                
+                // Call the predict endpoint
+                fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Hide loading spinner
+                    spinner.classList.add('d-none');
+                    predictBtn.disabled = false;
+                    
+                    // Display results
+                    if (data.status === 'success') {
+                        // Create predictions table
+                        let tableHtml = `
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Issue ID</th>
+                                        <th>Predicted RCA</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                        `;
+                        
+                        data.predictions.forEach(prediction => {
+                            tableHtml += `
+                                <tr>
+                                    <td>${prediction.Issue_ID}</td>
+                                    <td>${prediction.Predicted_RCA}</td>
+                                </tr>
+                            `;
+                        });
+                        
+                        tableHtml += `
+                                </tbody>
+                            </table>
+                        `;
+                        
+                        predictionsTable.innerHTML = tableHtml;
+                        
+                        // Display model performance
+                        let performanceHtml = `
+                            <p>Overall Accuracy: ${(data.performance.accuracy * 100).toFixed(2)}%</p>
+                            <h6>Per-Class Performance:</h6>
+                            <ul>
+                        `;
+                        
+                        for (const [className, metrics] of Object.entries(data.performance)) {
+                            if (className !== 'accuracy') {
+                                performanceHtml += `
+                                    <li>
+                                        <strong>${className}</strong>: 
+                                        Precision: ${(metrics.precision * 100).toFixed(2)}%, 
+                                        Recall: ${(metrics.recall * 100).toFixed(2)}%, 
+                                        F1: ${(metrics['f1-score'] * 100).toFixed(2)}%
+                                    </li>
+                                `;
+                            }
+                        }
+                        
+                        performanceHtml += `
+                            </ul>
+                        `;
+                        
+                        modelPerformance.innerHTML = performanceHtml;
+                        
+                        predictResult.style.display = 'block';
+                    } else {
+                        predictionsTable.innerHTML = `
+                            <div class="alert alert-danger">
+                                ${data.message}
+                            </div>
+                        `;
+                        predictResult.style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    // Hide loading spinner
+                    spinner.classList.add('d-none');
+                    predictBtn.disabled = false;
+                    
+                    // Display error
+                    predictionsTable.innerHTML = `
+                        <div class="alert alert-danger">
+                            Error: ${error.message}
+                        </div>
+                    `;
+                    predictResult.style.display = 'block';
+                });
+            });
+        });
+    </script>
+</body>
+</html> 
