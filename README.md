@@ -50,7 +50,7 @@ The app sends logs to multiple systems:
 ## Prerequisites
 
 - Python 3.9.7
-- Jupyter Notebook
+- Jupyter Notebook (For testing the scripts individually)
 - Required Python packages (listed in requirements.txt)
 
 ## Installation
@@ -77,12 +77,31 @@ source venv/bin/activate  # On Windows, use: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-4. Install Jupyter Notebook if you haven't already:
+## Usage Instructions
+
+### Web Application
+
+The project now includes a Flask web application for easy interaction (Runs locally):
+
+1. Start the Flask application:
 ```bash
-pip install jupyter
+cd AI-RCA
+python app.py
 ```
 
-## Usage Instructions
+2. Open your web browser and navigate to:
+```
+http://127.0.0.1:5001
+```
+
+3. Use the web interface to:
+   - Generate synthetic data by clicking the "Simulate" button
+   - Train the model and make predictions by clicking the "Predict" button
+   - View the results, including model performance metrics and predictions
+
+### Command Line Usage
+
+You can also use the Jupyter notebooks for more detailed analysis:
 
 1. **Generate Training Data**:
    - Open `dummy_data_gen_with_added_bugs.ipynb`
@@ -101,12 +120,32 @@ pip install jupyter
    - Wait for the training and inference process to complete
    - Review the predictions in the output
 
+## Project Structure
+
+The project is organized as follows:
+
+- `app.py`: Flask web application for generating data and making predictions
+- `dummy_data_gen.py`: Script for generating synthetic log data and Jira tickets
+- `training_inference.py`: Script for training the model and making predictions
+- `consolidate_logs.py`: Utility for consolidating logs from different sources
+- `compute_similarity.py`: Implementation of similarity metrics
+- `templates/index.html`: Web interface for the Flask application
+- `dummy_data_gen_with_added_bugs.ipynb`: Jupyter notebook for data generation
+- `training_inference.ipynb`: Jupyter notebook for model training and inference
+
 ## How It Works
 
 The system uses a combination of similarity metrics to predict RCAs:
 - Cosine Similarity: Measures the cosine of the angle between two vectors
 - Word-Wrap: Analyzes text similarity
 - Levenshtein Distance: Measures the minimum number of single-character edits required to change one string into another
+
+The process flow is:
+1. Generate synthetic log data and Jira tickets
+2. Extract features from logs and Jira tickets
+3. Train a RandomForest classifier
+4. Make predictions on cross-validation data
+5. Evaluate model performance
 
 ## Important Notes
 
