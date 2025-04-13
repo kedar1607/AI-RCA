@@ -18,6 +18,44 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
+@app.route('/get_logs', methods=['GET'])
+def get_logs():
+    try:
+        # Read the first 20 rows of each log file
+        analytics_logs = pd.read_csv('analytics_logs.csv').head(20).to_dict('records')
+        backend_logs = pd.read_csv('backend_logs.csv').head(20).to_dict('records')
+        datadog_logs = pd.read_csv('datadog_mobile_logs.csv').head(20).to_dict('records')
+        
+        return jsonify({
+            'status': 'success',
+            'analytics_logs': analytics_logs,
+            'backend_logs': backend_logs,
+            'datadog_logs': datadog_logs
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
+
+@app.route('/get_tickets', methods=['GET'])
+def get_tickets():
+    try:
+        # Read training and test tickets
+        training_tickets = pd.read_csv('jira_tickets_training.csv').to_dict('records')
+        test_tickets = pd.read_csv('jira_tickets_cv.csv').to_dict('records')
+        
+        return jsonify({
+            'status': 'success',
+            'training_tickets': training_tickets,
+            'test_tickets': test_tickets
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
+
 @app.route('/simulate', methods=['POST'])
 def simulate():
     try:

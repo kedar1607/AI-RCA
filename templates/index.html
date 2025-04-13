@@ -12,7 +12,7 @@
             padding-top: 2rem;
         }
         .container {
-            max-width: 900px;
+            max-width: 1200px;
         }
         .card {
             border-radius: 10px;
@@ -56,6 +56,24 @@
         .alert {
             margin-top: 1rem;
         }
+        .log-table {
+            font-size: 0.9rem;
+        }
+        .log-table th {
+            white-space: nowrap;
+        }
+        .log-table td {
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .ticket-table td {
+            max-width: 400px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
     </style>
 </head>
 <body>
@@ -76,6 +94,119 @@
                     <div class="alert alert-success">
                         <h5>Data Generation Results</h5>
                         <div id="simulateFiles"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Log Files Preview</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-4">
+                    <h6>Analytics Logs (First 20 entries)</h6>
+                    <div class="table-responsive">
+                        <table class="table table-striped log-table" id="analyticsLogsTable">
+                            <thead>
+                                <tr>
+                                    <th>Timestamp</th>
+                                    <th>Session ID</th>
+                                    <th>Event Index</th>
+                                    <th>Event Name</th>
+                                    <th>Event Type</th>
+                                    <th>Log Message</th>
+                                    <th>Article ID</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h6>Backend Logs (First 20 entries)</h6>
+                    <div class="table-responsive">
+                        <table class="table table-striped log-table" id="backendLogsTable">
+                            <thead>
+                                <tr>
+                                    <th>Timestamp</th>
+                                    <th>Session ID</th>
+                                    <th>Event Index</th>
+                                    <th>Event Name</th>
+                                    <th>Correlation ID</th>
+                                    <th>Service</th>
+                                    <th>Log Message</th>
+                                    <th>Article ID</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h6>DataDog Logs (First 20 entries)</h6>
+                    <div class="table-responsive">
+                        <table class="table table-striped log-table" id="datadogLogsTable">
+                            <thead>
+                                <tr>
+                                    <th>Timestamp</th>
+                                    <th>Session ID</th>
+                                    <th>Event Index</th>
+                                    <th>Event Name</th>
+                                    <th>Platform</th>
+                                    <th>Log Message</th>
+                                    <th>Article ID</th>
+                                    <th>Correlation ID</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Jira Tickets</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-4">
+                    <h6>Training Tickets (with RCA)</h6>
+                    <div class="table-responsive">
+                        <table class="table table-striped ticket-table" id="trainingTicketsTable">
+                            <thead>
+                                <tr>
+                                    <th>Issue ID</th>
+                                    <th>Project</th>
+                                    <th>Summary</th>
+                                    <th>Description</th>
+                                    <th>RCA</th>
+                                    <th>Created Date</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h6>Test Tickets (without RCA)</h6>
+                    <div class="table-responsive">
+                        <table class="table table-striped ticket-table" id="testTicketsTable">
+                            <thead>
+                                <tr>
+                                    <th>Issue ID</th>
+                                    <th>Project</th>
+                                    <th>Summary</th>
+                                    <th>Description</th>
+                                    <th>Created Date</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
@@ -114,6 +245,126 @@
             const simulateFiles = document.getElementById('simulateFiles');
             const predictionsTable = document.getElementById('predictionsTable');
             const modelPerformance = document.getElementById('modelPerformance');
+
+            // Function to load logs data
+            function loadLogs() {
+                // Clear existing table contents first
+                document.querySelector('#analyticsLogsTable tbody').innerHTML = '';
+                document.querySelector('#backendLogsTable tbody').innerHTML = '';
+                document.querySelector('#datadogLogsTable tbody').innerHTML = '';
+                
+                fetch('/get_logs')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            // Populate Analytics Logs
+                            const analyticsTbody = document.querySelector('#analyticsLogsTable tbody');
+                            if (data.data && data.data.analytics_logs) {
+                                data.data.analytics_logs.forEach(log => {
+                                    const tr = document.createElement('tr');
+                                    tr.innerHTML = `
+                                        <td>${log.timestamp || ''}</td>
+                                        <td>${log.session_id || ''}</td>
+                                        <td>${log.event_index || ''}</td>
+                                        <td>${log.event_name || ''}</td>
+                                        <td>${log.event_type || ''}</td>
+                                        <td>${log.log_message || ''}</td>
+                                        <td>${log.article_id || ''}</td>
+                                    `;
+                                    analyticsTbody.appendChild(tr);
+                                });
+                            }
+
+                            // Populate Backend Logs
+                            const backendTbody = document.querySelector('#backendLogsTable tbody');
+                            if (data.data && data.data.backend_logs) {
+                                data.data.backend_logs.forEach(log => {
+                                    const tr = document.createElement('tr');
+                                    tr.innerHTML = `
+                                        <td>${log.timestamp || ''}</td>
+                                        <td>${log.session_id || ''}</td>
+                                        <td>${log.event_index || ''}</td>
+                                        <td>${log.event_name || ''}</td>
+                                        <td>${log.correlation_id || ''}</td>
+                                        <td>${log.service || ''}</td>
+                                        <td>${log.log_message || ''}</td>
+                                        <td>${log.article_id || ''}</td>
+                                    `;
+                                    backendTbody.appendChild(tr);
+                                });
+                            }
+
+                            // Populate DataDog Logs
+                            const datadogTbody = document.querySelector('#datadogLogsTable tbody');
+                            if (data.data && data.data.datadog_logs) {
+                                data.data.datadog_logs.forEach(log => {
+                                    const tr = document.createElement('tr');
+                                    tr.innerHTML = `
+                                        <td>${log.timestamp || ''}</td>
+                                        <td>${log.session_id || ''}</td>
+                                        <td>${log.event_index || ''}</td>
+                                        <td>${log.event_name || ''}</td>
+                                        <td>${log.platform || ''}</td>
+                                        <td>${log.log_message || ''}</td>
+                                        <td>${log.article_id || ''}</td>
+                                        <td>${log.correlation_id || ''}</td>
+                                    `;
+                                    datadogTbody.appendChild(tr);
+                                });
+                            }
+                        } else {
+                            console.error('Error loading logs:', data.message);
+                        }
+                    })
+                    .catch(error => console.error('Error loading logs:', error));
+            }
+
+            // Function to load tickets data
+            function loadTickets() {
+                // Clear existing table contents first
+                document.querySelector('#trainingTicketsTable tbody').innerHTML = '';
+                document.querySelector('#testTicketsTable tbody').innerHTML = '';
+                
+                fetch('/get_tickets')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'success') {
+                            // Populate Training Tickets
+                            const trainingTbody = document.querySelector('#trainingTicketsTable tbody');
+                            data.training_tickets.forEach(ticket => {
+                                const tr = document.createElement('tr');
+                                tr.innerHTML = `
+                                    <td>${ticket.Issue_ID || ''}</td>
+                                    <td>${ticket.Project || ''}</td>
+                                    <td>${ticket.Summary || ''}</td>
+                                    <td>${ticket.Description || ''}</td>
+                                    <td>${ticket.RCA || ''}</td>
+                                    <td>${ticket.Created_Date || ''}</td>
+                                `;
+                                trainingTbody.appendChild(tr);
+                            });
+
+                            // Populate Test Tickets
+                            const testTbody = document.querySelector('#testTicketsTable tbody');
+                            data.test_tickets.forEach(ticket => {
+                                const tr = document.createElement('tr');
+                                tr.innerHTML = `
+                                    <td>${ticket.Issue_ID || ''}</td>
+                                    <td>${ticket.Project || ''}</td>
+                                    <td>${ticket.Summary || ''}</td>
+                                    <td>${ticket.Description || ''}</td>
+                                    <td>${ticket.Created_Date || ''}</td>
+                                `;
+                                testTbody.appendChild(tr);
+                            });
+                        }
+                    })
+                    .catch(error => console.error('Error loading tickets:', error));
+            }
+
+            // Load logs and tickets when the page loads
+            loadLogs();
+            loadTickets();
             
             simulateBtn.addEventListener('click', function() {
                 // Show loading spinner
@@ -147,6 +398,10 @@
                             </ul>
                         `;
                         simulateResult.style.display = 'block';
+                        
+                        // Reload logs and tickets after successful generation
+                        loadLogs();
+                        loadTickets();
                     } else {
                         simulateFiles.innerHTML = `
                             <div class="alert alert-danger">
@@ -177,6 +432,10 @@
                 spinner.classList.remove('d-none');
                 predictBtn.disabled = true;
                 predictResult.style.display = 'none';
+                
+                // Clear previous results
+                predictionsTable.innerHTML = '';
+                modelPerformance.innerHTML = '';
                 
                 // Call the predict endpoint
                 fetch('/predict', {
